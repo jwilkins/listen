@@ -254,6 +254,9 @@ module Listen
       sha1_checksum = Digest::SHA1.file(path).to_s
       return false if @sha1_checksums[path] == sha1_checksum
       @sha1_checksums.key?(path)
+    rescue Errno::ENXIO, Errno::EOPNOTSUPP
+      # This occurs for socket fd's
+      false
     rescue Errno::EACCES, Errno::ENOENT
       false
     ensure
